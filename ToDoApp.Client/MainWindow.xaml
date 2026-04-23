@@ -1,0 +1,184 @@
+﻿<Window x:Class="ToDoApp.Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wrappers="clr-namespace:ToDoApp.Client.Wrappers"
+        xmlns:viewModel="clr-namespace:ToDoApp.Client.ViewModel"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewModel:ToDoViewModel, IsDesignTimeCreatable=False}"
+        Loaded="MainWindow_OnLoaded"
+        Title="To-Do List"
+        Height="620"
+        Width="1100"
+        MinHeight="620"
+        MinWidth="1100"
+        Background="#F5F7FB"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+    <Window.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,12">
+                <Button Content="&lt;"
+                        Width="40"
+                        Margin="0,0,8,0"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Command="{Binding PreviousDay}"/>
+                <DatePicker SelectedDate="{Binding SelectedDate, Mode=TwoWay}"
+                            Width="170"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource InputDatePickerStyle}"/>
+                <Button Content=">"
+                        Width="40"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Command="{Binding NextDay}"/>
+            </DockPanel>
+
+            <Border Grid.Row="1"
+                    Background="{StaticResource CardBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}"
+                    BorderThickness="1"
+                    Padding="12"
+                    CornerRadius="10"
+                    Margin="0,0,0,12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                        <TextBlock Text="Title" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <TextBox VerticalContentAlignment="Center"
+                                 Style="{StaticResource InputTextBoxStyle}"
+                                 Text="{Binding NewTask.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="0,0,8,0">
+                        <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <TextBox VerticalContentAlignment="Center"
+                                 Style="{StaticResource InputTextBoxStyle}"
+                                 Text="{Binding NewTask.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Margin="0,0,8,0">
+                        <TextBlock Text="Author" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <TextBox VerticalContentAlignment="Center"
+                                 Style="{StaticResource InputTextBoxStyle}"
+                                 Text="{Binding NewTask.Author, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="3" Margin="0,0,8,0">
+                        <TextBlock Text="Due date" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <DatePicker SelectedDate="{Binding NewTask.DueDate, Mode=TwoWay}"
+                                    Style="{StaticResource InputDatePickerStyle}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="4" Margin="0,0,8,0">
+                        <TextBlock Text="Status" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <ComboBox ItemsSource="{Binding TaskStatuses}"
+                                  Style="{StaticResource InputComboBoxStyle}"
+                                  SelectedItem="{Binding NewTask.Status, Mode=TwoWay}"/>
+                    </StackPanel>
+                    <Button Grid.Column="5"
+                            Content="Add task"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource BaseButtonStyle}"
+                            Command="{Binding AddTask}"/>
+                </Grid>
+            </Border>
+
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding FilteredTasks}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel IsItemsHost="True"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type wrappers:ToDoTaskWrapper}">
+                            <Border Width="320"
+                                    Margin="0,0,12,12"
+                                    Padding="12"
+                                    Background="{StaticResource CardBrush}"
+                                    BorderBrush="{StaticResource CardBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="10">
+                                <StackPanel>
+                                    <TextBlock Text="Title" FontWeight="SemiBold"/>
+                                    <TextBox Margin="0,4,0,8"
+                                             Style="{StaticResource InputTextBoxStyle}"
+                                             Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                    <TextBlock Text="Description" FontWeight="SemiBold"/>
+                                    <TextBox Margin="0,4,0,8"
+                                             Height="70"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             Style="{StaticResource InputTextBoxStyle}"
+                                             Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                    <TextBlock Text="Author" FontWeight="SemiBold"/>
+                                    <TextBox Margin="0,4,0,8"
+                                             Style="{StaticResource InputTextBoxStyle}"
+                                             Text="{Binding Author, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                    <TextBlock Text="Due date" FontWeight="SemiBold"/>
+                                    <DatePicker Margin="0,4,0,8"
+                                                Style="{StaticResource InputDatePickerStyle}"
+                                                SelectedDate="{Binding DueDate, Mode=TwoWay}"/>
+
+                                    <TextBlock Text="Status" FontWeight="SemiBold"/>
+                                    <ComboBox Margin="0,4,0,12"
+                                              Style="{StaticResource InputComboBoxStyle}"
+                                              ItemsSource="{Binding DataContext.TaskStatuses, RelativeSource={RelativeSource AncestorType=Window}}"
+                                              SelectedItem="{Binding Status, Mode=TwoWay}"/>
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Content="Save"
+                                                Margin="0,0,8,0"
+                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                Command="{Binding DataContext.ModifyTask, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                CommandParameter="{Binding}"/>
+                                        <Button Content="Delete"
+                                                Style="{StaticResource DangerButtonStyle}"
+                                                Command="{Binding DataContext.RemoveTask, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                CommandParameter="{Binding}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <StatusBar Grid.Row="3"
+                       Margin="0,12,0,0"
+                       Visibility="{Binding StatusBar.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StatusBar.Style>
+                    <Style TargetType="StatusBar">
+                        <Setter Property="Background" Value="#E2E8F0"/>
+                        <Setter Property="Foreground" Value="#0F172A"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding StatusBar.IsErrorStatus}" Value="True">
+                                <Setter Property="Background" Value="#D9534F"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StatusBar.Style>
+                <TextBlock Text="{Binding StatusBar.Message}" FontWeight="SemiBold"/>
+            </StatusBar>
+    </Grid>
+</Window>

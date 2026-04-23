@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="ToDoApp.Data/ToDoApp.Data.csproj" />
+  <Project Path="ToDoApp.Client/ToDoApp.Client.csproj" />
+  <Project Path="ToDoApp.Wpf/ToDoApp.Wpf.csproj" />
+</Solution>
+
+
+
+
