@@ -45,6 +45,7 @@ public class ToDoViewModel(ITaskService taskService, ITaskValidator taskValidato
             var created = await taskService.Create(NewTask.GetModel());
             Tasks.Add(new ToDoTaskWrapper(created));
             NewTask = CreateEmptyTask();
+            UpdateReminderStatusMessage();
         }
         catch (Exception e)
         {
@@ -84,6 +85,7 @@ public class ToDoViewModel(ITaskService taskService, ITaskValidator taskValidato
         try
         {
             await taskService.Modify(task.GetModel());
+            UpdateReminderStatusMessage();
         }
         catch (Exception e)
         {
